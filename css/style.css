@@ -20,6 +20,7 @@ h1 {
   border-radius: 4px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
   display: inline-block;
+  margin-right: 25px;
   padding: 1.25em 3em;
   text-decoration: none;
   -webkit-transition: 0.25s ease;
@@ -44,6 +45,8 @@ h1 {
     color: #fff; }
   .screen-start {
     background: #54D17A; }
+    .screen-start ul{
+      display: none;}
     .screen-start h1 {
       font-size: 6em; }
     .screen-start .button {
@@ -66,17 +69,28 @@ h1 {
       z-index: -1; }
   .screen-win-tie {
     background: #54D17A; }
+    .screen-win-tie ul{
+      display: none; }
+    .screen-win-tie p:before {
+      content: "Draw";
+      top: 1.75rem; }
   .screen-win-one {
     background: #FFA000; }
     .screen-win-one .button {
-      color: #3688C3; }
+      color: #3688C3;
+      display: ; }
+    .screen-win-one ul {
+      display: none;}
     .screen-win-one p:before {
       content: "o";
       top: 1.75rem; }
   .screen-win-two {
     background: #3688C3; }
     .screen-win-two .button {
-      color: #FFA000; }
+      color: #FFA000;
+      display: ;}
+    .screen-win-two ul {
+      display: none;}
     .screen-win-two p:before {
       content: "×";
       top: 4.5rem; }
@@ -85,6 +99,8 @@ h1 {
   padding-top: 1em; }
   .board h1 {
     margin-top: 0.3em; }
+  .board ul {
+    display: : ''; }
 
 .players {
   color: rgba(0, 0, 0, 0.2);
