@@ -72,7 +72,10 @@ h1 {
     .screen-win-tie ul{
       display: none; }
     .screen-win-tie p:before {
-      content: "Draw";
+      content: "It's a draw";
+      color: #fff;
+      font-size: 5em;
+      font-weight: bold;
       top: 1.75rem; }
   .screen-win-one {
     background: #FFA000; }
@@ -83,6 +86,9 @@ h1 {
       display: none;}
     .screen-win-one p:before {
       content: "o";
+      color: #000;
+      font-size: 5em;
+      font-weight: bold;
       top: 1.75rem; }
   .screen-win-two {
     background: #3688C3; }
@@ -92,7 +98,10 @@ h1 {
     .screen-win-two ul {
       display: none;}
     .screen-win-two p:before {
-      content: "×";
+      content: "x";
+      color: #000;
+      font-size: 5em;
+      font-weight: bold;
       top: 4.5rem; }
 
 .board {
@@ -108,11 +117,15 @@ h1 {
   position: absolute;
   top: 1rem;
   width: 35%;
-  padding: 1.25em 0 1em;
+  padding: 1.25em 0 0;
   outline: 1px solid #ccc;
   transition: 1s; }
   .players svg g {
     fill: rgba(0, 0, 0, 0.25); }
+  .players p {
+    font-weight: bold;
+    color: #000;
+    font-size: 15px;}
   .players:first-child {
     left: 2.5%; }
   .players:last-child {

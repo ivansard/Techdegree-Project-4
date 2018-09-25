@@ -5,7 +5,7 @@ const boxes = document.querySelectorAll('.box');
 const board = document.querySelector('#board');
 const playerRectangles = document.querySelector('#player1').parentNode;
 const player1Rectangle = document.querySelector('#player1');
-const player2Rectangle = document.querySelector('#player1');
+const player2Rectangle = document.querySelector('#player2');
 const header = document.querySelector('header');
 const startButton = document.createElement('a');
 startButton.className = 'button';
@@ -14,7 +14,7 @@ startButton.href = '#';
 startButton.textContent = 'Start game - 2 Players';
 const startButtonComputer =  document.createElement('a');
 startButtonComputer.className = 'button';
-startButton.id = '1player';
+startButtonComputer.id = '1player';
 startButtonComputer.href = '#';
 startButtonComputer.textContent = 'Start game - 1 Player';
 const winnerMessage = document.createElement('p');
@@ -69,45 +69,110 @@ document.addEventListener('DOMContentLoaded', () => {
       // return startButton;
     },
 
+    hideScreenShowBoard: function(){
+
+      this.resetElementsForNewGame();
+      board.className = 'board';
+      this.addHoverImages();
+      const buttons = document.querySelectorAll('.button');
+      buttons.forEach(button => button.style.display = 'none');
+    },
+
     prepareGameForStart: function(){
 
-      // const startButton = this.createAndAppendStartButton();
+      this.addPlayer1NameTag();
+      this.addPlayer2NameTag();
+
       this.createAndAppendStartButton();
 
-      const buttons = document.querySelectorAll('.button')
+      const buttons = document.querySelectorAll('.button');
       buttons.forEach(button => {
         button.addEventListener('click', (event) =>{
 
-          this.resetElementsForNewGame();
-          board.className = 'board';
-
           if(event.target.id === '2players'){
             computerPlaying = false;
+            let player1Name = prompt('Player 1 Name:');
+            while(!player1Name || player1Name.trim().length === 0){
+              player1Name = prompt('Player 1 Name:');
+            }
+            const player1NameTag = document.querySelector('#player1 p');
+            player1NameTag.textContent = player1Name;
+            let player2Name = prompt('Player 2 Name:');
+            while(!player2Name || player2Name.trim().length === 0){
+              player2Name = prompt('Player 2 Name:');
+            }
+            const player2NameTag = document.querySelector('#player2 p');
+            player2NameTag.textContent = player2Name;
+
           } else if(event.target.id === '1player'){
             computerPlaying = true;
+
+            let player1Name = prompt('Player 1 Name:');
+            while(!player1Name || player1Name.trim().length === 0){
+              player1Name = prompt('Player 1 Name:');
+            }
+            const player1NameTag = document.querySelector('#player1 p');
+            player1NameTag.textContent = player1Name;
+
+            const player2NameTag = document.querySelector('#player2 p');
+            player2NameTag.textContent = 'Computer';
           }
 
-          event.target.style.display = 'none';
-
+          this.hideScreenShowBoard();
           this.prepareGameForPlay();
         })
       })
 
-      //Adding event listener to newly created button so it starts the game
-      // Additionally also hiding the button
-      startButton.addEventListener('click', (event) => {
+    },
+    addHoverImages: function(svg){
+      boxes.forEach(box => {
+        box.addEventListener('mouseover', (event) => {
+          if(event.target.classList.contains('box-filled-1') || event.target.classList.contains('box-filled-2')){
+            event.target.style.backgroundImage = '';
+          } else {
+            event.target.style.backgroundImage = svg;
+            event.target.style.backgroundRepeat = 'no-repeat';
+            event.target.style.backgroundSize = 'contain';
+          }
+        })
+      })
+    },
 
-        this.resetElementsForNewGame();
+    switchHoverImagesOnTurn: function () {
+      if (player1Rectangle.classList.contains('active')) {
+        this.addHoverImages('url("img/o.svg")');
+      } else if (player2Rectangle.classList.contains('active')){
+        this.addHoverImages('url("img/x.svg")');
+      } else {
+        this.addHoverImages("url('img/o.svg')");
+      }
+    },
 
-        board.className = 'board';
+    removeHoverImages: function addMouseOut () {
+      boxes.forEach(box => {
+        box.addEventListener('mouseout', function(e) {
+          event.target.style.backgroundImage = '';
+        });
+      })
+    },
 
-        event.target.style.display = 'none';
-        this.prepareGameForPlay();
-      });
+    addPlayer1NameTag: function(){
+
+      const nameTag = document.createElement('p');
+      nameTag.className = 'playerNameTag';
+      player1Rectangle.appendChild(nameTag);
+
+    },
+
+    addPlayer2NameTag: function(){
+      const nameTag = document.createElement('p');
+      nameTag.className = 'playerNameTag';
+      player2Rectangle.appendChild(nameTag);
     },
 
     resetElementsForNewGame: function(){
       //Reset all boxes
+
       for (var i = 0; i < boxes.length; i++) {
         boxes[i].className = 'box';
       }
@@ -147,6 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
       this.activePlayer = this.player1;
       this.activePlayer.colorRectangle.classList.add('active');
 
+      this.removeHoverImages();
+      this.switchHoverImagesOnTurn();
 
       //Listening for events on the boxes
       boxUL.addEventListener('click', (event) => {
@@ -165,23 +232,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const noMoreBoxesToFill = this.noMoreBoxesToFill();
         if(threeInRow){
           this.endGameWin(this.activePlayer);
+          return ;
         } else if(noMoreBoxesToFill) {
           this.endGameDraw();
+          return ;
         }
+        //The computer  playing algorithm has three actions
         if(computerPlaying === true){
           this.switchToOtherPlayer();
+          // Firstly, the computer checks if there is an opprotunity to win the game
+          // and these moves are of top priority
           let possibleMoves = this.createWinningMovesArray();
           if(possibleMoves.length > 0 ){
             this.computerPlayMove(possibleMoves);
             this.checkForWinOrDraw();
             this.switchToOtherPlayer();
           } else {
+            //Secondly, if the computer cannot win the game, it checks if there is a box
+            // that must be checked in order to prevent the opponent from winning the game
             possibleMoves = this.createMustDefendMovesArray();
             if(possibleMoves.length > 0){
               this.computerPlayMove(possibleMoves);
               this.checkForWinOrDraw();
               this.switchToOtherPlayer();
             } else{
+              //Finally, the computer loooks for the box which could give it the most leverage
+              // in the current game conditions (e.g playing the central box on first turn)
               const checkBoxToPlay = this.findUncheckedBoxWithMostPotential();
               possibleMoves.push(checkBoxToPlay);
               this.computerPlayMove(possibleMoves);
@@ -193,13 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           this.switchToOtherPlayer();
         }
-
-        // this.createWinningMovesArray();
-
-
-        //If he has, set the winning screen to the active player1
-
-        //If he hasn't, then switch play to the other player
 
       });
     },
@@ -220,12 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
         this.activePlayer = this.player2;
         this.activePlayer.colorRectangle.classList.add('active');
         this.inactivePlayer = this.player1;
+        this.switchHoverImagesOnTurn();
 
       } else {
         this.activePlayer.colorRectangle.classList.remove('active');
         this.activePlayer = this.player1;
         this.activePlayer.colorRectangle.classList.add('active');
         this.inactivePlayer = this.player2;
+        this.switchHoverImagesOnTurn();
       }
     },
 
@@ -241,9 +312,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       header.insertBefore(winnerMessage, playerRectangles);
 
-      startButton.textContent = 'New Game';
+      startButton.textContent = 'New Game - 2 Players';
       startButton.style.display = '';
       header.appendChild(startButton);
+      startButtonComputer.textContent = 'New Game - 1 Player';
+      startButtonComputer.style.display = '';
+      header.appendChild(startButtonComputer);
 
     },
 
@@ -253,9 +327,16 @@ document.addEventListener('DOMContentLoaded', () => {
       board.classList.add('screen-win-tie');
       board.id = 'finish';
 
-      startButton.textContent = 'New Game';
+      header.insertBefore(winnerMessage, playerRectangles);
+
+
+      startButton.textContent = 'New Game - 2 Players';
       startButton.style.display = '';
       header.appendChild(startButton);
+      startButtonComputer.textContent = 'New Game - 1 Player';
+      startButtonComputer.style.display = '';
+      header.appendChild(startButtonComputer);
+
     },
 
 
@@ -360,15 +441,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   }
-
-    game.prepareGameForStart();
+   game.prepareGameForStart();
 
 
   });
 
 
-//Ako ima sansi da zavrsim neku kombinaciju da pobedim, to zaokruzujem
 
-//Ako protivniku fali jedna u nekoj kombinaciji da pobedi, zaokruzi tu jednu da ne pobedi
-
-//Ako vec imam jednu u jednoj/vise kombinacija I protivnik nema svoju u toj kombiniacji (randomuj), zaokruzi jednu iz te kombinacije
