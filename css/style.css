@@ -85,7 +85,7 @@ h1 {
     .screen-win-one ul {
       display: none;}
     .screen-win-one p:before {
-      content: "o";
+      content: "Winner is o";
       color: #000;
       font-size: 5em;
       font-weight: bold;
@@ -94,11 +94,11 @@ h1 {
     background: #3688C3; }
     .screen-win-two .button {
       color: #FFA000;
-      display: ;}
+      display: '';}
     .screen-win-two ul {
       display: none;}
     .screen-win-two p:before {
-      content: "x";
+      content: "Winner is x";
       color: #000;
       font-size: 5em;
       font-weight: bold;
@@ -109,7 +109,7 @@ h1 {
   .board h1 {
     margin-top: 0.3em; }
   .board ul {
-    display: : ''; }
+    display:  ''; }
 
 .players {
   color: rgba(0, 0, 0, 0.2);
